@@ -1,8 +1,29 @@
-# expo-events-feature
+# EventMate — Create/Edit Events, attach image, location and reminders
 
 A React Native app built with **Expo SDK 51**, **React Native 0.74**, and **expo-router**.
 
 This README covers install, running, and version-control tips (including ignoring `ios/` and `android/`).
+
+---
+
+## 🗄️ Zustand - State Management
+
+- **Tiny API, minimal code:** create a store with one function—no actions/reducers/slices ceremony.
+- **Direct, type-safe updates:** write plain functions; you can keep actions in the same file as state.
+- **Great React perf:** selectors and shallow compare keep re-renders low.
+- **Side effects where you want them:** do work inside actions or subscribe to state changes—your choice.
+- **Middleware when needed:** persist, immer, devtools opt-in without committing to a big framework.
+
+---
+
+---
+
+## 💾 Storage - AsyncStorage
+
+- **Works in Expo Go:** no native build required to persist data locally.
+- **Battle-tested key–value store:** reliable for caching user prefs and small app data.
+- **Drop-in with Zustand:** persist + createJSONStorage(() => AsyncStorage) hydrates on app start.
+- **Easy to swap later:** if you need more speed, you can swap the storage adapter (e.g., MMKV) without changing the store API.
 
 ---
 
