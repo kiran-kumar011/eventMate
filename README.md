@@ -14,10 +14,6 @@ This README covers install, running, and version-control tips (including ignorin
 - **Side effects where you want them:** do work inside actions or subscribe to state changes—your choice.
 - **Middleware when needed:** persist, immer, devtools opt-in without committing to a big framework.
 
----
-
----
-
 ## 💾 Storage - AsyncStorage
 
 - **Works in Expo Go:** no native build required to persist data locally.

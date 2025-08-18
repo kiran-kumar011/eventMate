@@ -1,5 +1,4 @@
-// hooks/useCurrentLocation.ts
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { LatLng, getCurrentCoords } from 'src/lib/location';
 
