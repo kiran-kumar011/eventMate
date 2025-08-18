@@ -1,0 +1,45 @@
+{
+    "version": 1,
+    "updatedAt": "2025-08-18T12:45:00.000Z",
+    "events": [
+        {
+            "id": "e-1300",
+            "title": "Changing from Previous updating check",
+            "startAt": "2025-08-18T11:00:00.000Z",
+            "endAt": "2025-08-18T12:00:00.000Z",
+            "venueName": "Random",
+            "latitude": 37.7862,
+            "longitude": -122.4013,
+            "description": "Leaders discuss tooling, quality, and velocity trade-offs.",
+            "imageUrl": "https://picsum.photos/seed/e134/800/500",
+            "updatedAt": "2025-08-18T12:45:00.000Z",
+            "status": "active"
+        },
+        {
+            "id": "e-1301",
+            "title": "Rect Native Notification for RSVPs",
+            "startAt": "2025-08-18T12:00:00.000Z",
+            "endAt": "2025-08-18T12:30:00.000Z",
+            "venueName": "Working Room",
+            "latitude": 37.7862,
+            "longitude": -122.4013,
+            "description": "Leaders discuss tooling, quality, and velocity trade-offs.",
+            "imageUrl": "https://picsum.photos/seed/e134/800/500",
+            "updatedAt": "2025-08-14T15:45:00.000Z",
+            "status": "active"
+        },
+        {
+            "id": "e-1303",
+            "title": "Recording a demo video",
+            "startAt": "2025-08-18T12:00:00.000Z",
+            "endAt": "2025-08-18T12:30:00.000Z",
+            "venueName": "Workspace",
+            "latitude": 37.7862,
+            "longitude": -122.4013,
+            "description": "Explain background fetch, notification, list, filtering, reload logic",
+            "imageUrl": "https://picsum.photos/seed/e134/800/500",
+            "updatedAt": "2025-08-14T15:45:00.000Z",
+            "status": "active"
+        }
+    ]
+}
