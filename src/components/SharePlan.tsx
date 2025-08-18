@@ -10,7 +10,6 @@ function SharePlan({ id }: { id: string }) {
 
   const onPress = async () => {
     const url = makeUrl();
-    console.log(url, 'url');
     await Clipboard.setStringAsync(url);
     setCopied(true);
     Alert.alert('Copied', 'Link copied to clipboard');

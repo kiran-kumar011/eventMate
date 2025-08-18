@@ -25,7 +25,6 @@ export async function pickAndPersistImage(
     await FileSystem.copyAsync({ from: src, to: dest });
     return dest;
   } catch (e) {
-    console.warn('Failed to persist image', e);
     return null;
   }
 }

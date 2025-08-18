@@ -96,34 +96,28 @@ export async function scheduleOneShotTest(secondsFromNow = 5) {
 
 export async function listScheduled() {
   const list = await Notifications.getAllScheduledNotificationsAsync();
-  console.log('[Notif] Scheduled:', list);
   return list;
 }
 
 export async function bootstrapNotifications() {
   try {
-    // 1) Create a channel FIRST (needed for Android 13 prompt + visual settings)
     if (Platform.OS === 'android') {
       await Notifications.setNotificationChannelAsync('reminders', {
         name: 'Reminders',
         importance: Notifications.AndroidImportance.MAX, // heads-up
         vibrationPattern: [0, 250, 250, 250],
         lightColor: '#FF231F7C',
-        // sound: 'my_sound.wav' // only if you added a custom sound
       });
     }
 
-    // 2) Ask permission (after channel exists on Android 13+)
     const { status } = await Notifications.getPermissionsAsync();
     if (status !== 'granted') await Notifications.requestPermissionsAsync();
 
-    // 3) Foreground presentation handler — **must** return a "show" flag
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        // keep all of these true to be safe across SDKs
-        shouldShowAlert: true, // (works cross-platform)
-        shouldShowBanner: true, // (iOS style; harmless on Android)
-        shouldShowList: true, // (iOS Notification Center)
+        shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
       }),
@@ -131,16 +125,4 @@ export async function bootstrapNotifications() {
   } catch (error) {
     Alert.alert('Please enable Notifications');
   }
-  console.log(
-    '[Notif] Permissions:',
-    await Notifications.getPermissionsAsync(),
-  );
-  console.log(
-    '[Notif] Channels:',
-    await Notifications.getNotificationChannelsAsync(),
-  );
-  console.log(
-    '[Notif] Scheduled (initial):',
-    await Notifications.getAllScheduledNotificationsAsync(),
-  );
 }

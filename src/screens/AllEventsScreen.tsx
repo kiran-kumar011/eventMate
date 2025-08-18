@@ -11,7 +11,6 @@ export default function AllEvents() {
       reloadEvents: s.updateWithUpdatedEvents,
     };
   });
-  console.log(reload, 'reload');
   return (
     <View style={styles.container}>
       <EventList />

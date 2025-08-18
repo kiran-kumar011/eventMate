@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import * as Location from 'expo-location';
 
 export type LatLng = { latitude: number; longitude: number };
@@ -36,7 +37,7 @@ export async function getCurrentCoords(
     );
     return { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
   } catch (e) {
-    console.warn('getCurrentCoords error', e);
+    Alert.alert('Please enable the location ');
     return null;
   }
 }

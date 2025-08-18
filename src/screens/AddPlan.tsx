@@ -112,7 +112,6 @@ export default function AddEvent() {
       await FileSystem.copyAsync({ from: src, to: dest });
       setLocalImageUri(dest);
     } catch (e) {
-      console.warn('Failed to persist image', e);
       Alert.alert('Error', 'Could not save image locally.');
     }
   };
