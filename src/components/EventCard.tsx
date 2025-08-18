@@ -3,7 +3,7 @@ import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEvents } from '@store/useEvents';
 import { activeIcon, inactiveIcon, iconSize } from 'src/constants';
-import type { Event } from '@types/Event';
+import type { Event } from 'src/types/Event';
 import {
   scheduleReminderForEvent,
   cancelReminderForEvent,

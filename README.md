@@ -9,7 +9,6 @@ This README covers install, running, and version-control tips (including ignorin
 ## 📦 Prerequisites
 
 - **Node.js**: v18 or v20 recommended
-- **Git**
 - **Android**: Android Studio + SDKs, an emulator/device, **JDK 17**
 - **iOS (macOS)**: Xcode + iOS Simulator, **CocoaPods** (`sudo gem install cocoapods`)
 
@@ -32,7 +31,7 @@ npm install -g eas-cli
 
 ```bash
 # 1) Install dependencies
-npm install
+npx expo install
 
 # 2) Start Metro (dev server)
 npx expo start -c   # or: npm run start

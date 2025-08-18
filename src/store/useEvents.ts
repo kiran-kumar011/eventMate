@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { events } from '@assets/data/events.json';
-import type { Event as BaseEvent } from '@types/Event';
+import type { Event as BaseEvent } from 'src/types/Event';
 
 import basePkg from '@assets/data/events.json';
 

@@ -17,25 +17,23 @@ type Display = 'default' | 'spinner' | 'clock' | 'compact' | 'inline'; // iOS su
 
 export interface TimePickerFieldProps {
   label?: string;
-  value: string | null; // full Date; you can ignore the date part if you only need time
+  value: Date; // full Date; you can ignore the date part if you only need time
   onChange: (date: Date) => void;
-  is24Hour?: boolean; // default: device setting
-  display?: Display; // default: 'default'
+  is24Hour?: boolean;
+  display?: Display;
   minuteInterval?: 1 | 2 | 3 | 4 | 5 | 6 | 10 | 12 | 15 | 20 | 30; // iOS only
 }
 
-export const TimePickerField: React.FC<TimePickerFieldProps> = ({
+const TimePickerField: React.FC<TimePickerFieldProps> = ({
   label,
-  value,
+  value = new Date(),
   onChange,
-  is24Hour,
+  is24Hour = false,
   display = 'default',
   minuteInterval,
 }) => {
   const [iosVisible, setIosVisible] = useState(false);
-  const [tempTime, setTempTime] = useState<string>(
-    value ?? new Date().toLocaleString(),
-  );
+  const [tempTime, setTempTime] = useState<Date>(new Date(value));
 
   const shownText = useMemo(
     () => formatTime(value, is24Hour),
@@ -43,10 +41,9 @@ export const TimePickerField: React.FC<TimePickerFieldProps> = ({
   );
 
   const openPicker = () => {
-    const base = toValidDate(value) ?? new Date().toLocaleString;
+    const base: Date = toValidDate(value) ?? new Date();
 
     if (Platform.OS === 'android') {
-      // Android uses a native dialog
       DateTimePickerAndroid.open({
         value: base,
         mode: 'time',
@@ -55,14 +52,15 @@ export const TimePickerField: React.FC<TimePickerFieldProps> = ({
         onChange: (event: DateTimePickerEvent, selected?: Date) => {
           if (event.type === 'set' && selected) {
             // If you care about keeping the original date part, merge:
-            const next = value ? mergeTime(value, selected) : selected;
+
+            const next: Date | null = value
+              ? mergeTime(base, selected)
+              : selected;
             onChange(next);
           }
-          // 'dismissed' requires no action
         },
-      } as any); // .open exists on the module default export in this package
+      } as any);
     } else {
-      // iOS: show a modal with inline spinner/compact/etc.
       setTempTime(value);
       setIosVisible(true);
     }
@@ -102,7 +100,6 @@ export const TimePickerField: React.FC<TimePickerFieldProps> = ({
                 mode="time"
                 value={tempTime}
                 onChange={(_, d) => d && setTempTime(d)}
-                display={display}
                 is24Hour={is24Hour}
                 minuteInterval={minuteInterval}
                 style={{ alignSelf: 'stretch' }}
@@ -147,3 +144,5 @@ const styles = StyleSheet.create({
   title: { fontWeight: '700', fontSize: 16 },
   link: { color: '#2563EB', fontWeight: '600' },
 });
+
+export default TimePickerField;

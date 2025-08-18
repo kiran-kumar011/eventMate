@@ -12,17 +12,15 @@ import {
 } from 'react-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-// Image picker + file system
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useEvents } from '@store/useEvents';
-import type { Event } from '@types/Event';
-import { TimePickerField } from '@components/TimePicker';
+import type { Event } from 'src/types/Event';
+import { TimePickerField, EventMap } from '@components/index';
 
-import EventMap from '@components/EventMap';
 import { useCurrentLocation } from 'src/hooks/useCurrentLocation';
 
-const iso = (d: Date) => d.toISOString();
+const iso = (d: Date): string | null => d.toISOString();
 
 export default function AddEvent() {
   const router = useRouter();
@@ -150,7 +148,7 @@ export default function AddEvent() {
         `https://picsum.photos/seed/${Math.random()
           .toString(36)
           .slice(2)}/800/500`,
-      updatedAt: iso(new Date()),
+      updatedAt: new Date().toLocaleString(),
     };
 
     isEdit ? updateEvent(e) : addDraft(e);
@@ -193,7 +191,7 @@ export default function AddEvent() {
         {field('Venue', venueName, setVenue, { placeholder: 'Hall A' })}
         <TimePickerField
           label="Start time"
-          value={startAt}
+          value={new Date(startAt ?? new Date())}
           onChange={(date) => setStart(iso(date))}
           is24Hour={false}
           display={Platform.select({ ios: 'spinner', android: 'clock' })}
@@ -201,7 +199,7 @@ export default function AddEvent() {
         />
         <TimePickerField
           label="End time"
-          value={endAt}
+          value={new Date(endAt ?? new Date())}
           onChange={(date) => setEnd(iso(date))}
           is24Hour={false} // set false for 12-hour; omit to follow device setting
           display={Platform.select({ ios: 'spinner', android: 'clock' })}

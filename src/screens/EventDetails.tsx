@@ -17,6 +17,7 @@ import {
   scheduleReminderForEvent,
   cancelReminderForEvent,
 } from 'src/lib/notifications';
+import EventMap from '@components/EventMap';
 
 export default function EventDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -78,6 +79,11 @@ export default function EventDetail() {
         <Text style={[styles.description, styles.description1]}>
           {event?.description}
         </Text>
+        <EventMap
+          latitude={event.latitude}
+          longitude={event.longitude}
+          borderRadius={20}
+        />
         <Pressable
           onPress={handleScheduling}
           style={[styles.btnWrapper, { backgroundColor: saved ? red : green }]}

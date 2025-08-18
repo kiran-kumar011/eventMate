@@ -4,8 +4,8 @@ export type Event = {
   startAt: string;
   endAt: string;
   venueName: string;
-  latitude: number;
-  longitude: number;
+  latitude: number | undefined;
+  longitude: number | undefined;
   description: string;
   imageUrl: string;
   updatedAt: string;

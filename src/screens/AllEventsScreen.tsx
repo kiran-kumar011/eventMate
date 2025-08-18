@@ -20,7 +20,7 @@ export default function AllEvents() {
             disabled={!reload}
             style={[
               styles.roundButton,
-              { backgroundColor: reload ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0.2)' },
+              { backgroundColor: reload ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0.4)' },
             ]}
             onPress={reloadEvents}
           >
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
   },
   icon: { color: '#fff' },
 });

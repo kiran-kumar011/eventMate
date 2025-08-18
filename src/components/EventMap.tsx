@@ -50,7 +50,11 @@ const EventMap: React.FC<Props> = ({
 
   return (
     <MapView
-      style={{ height, borderRadius, overflow: 'hidden' as const }}
+      style={{
+        height,
+        borderRadius,
+        overflow: 'hidden' as const,
+      }}
       initialRegion={region}
       scrollEnabled={!disableGestures}
       zoomEnabled={!disableGestures}
@@ -80,6 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
+    borderRadius: 10,
   },
   placeholderEmoji: { fontSize: 22, marginBottom: 4 },
   placeholderTitle: { fontWeight: '600', fontSize: 14, color: '#111827' },

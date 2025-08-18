@@ -3,7 +3,7 @@ import { FlashList } from '@shopify/flash-list';
 import { View, StyleSheet, Text } from 'react-native';
 import EventCard from './EventCard';
 import { useEvents } from '@store/useEvents';
-import { Event } from '@types/Event';
+import { Event } from 'src/types/Event';
 
 export default function EventList() {
   const events = useEvents((s) => s.events);

@@ -6,12 +6,13 @@ import { screenOptions } from 'src/constants';
 import { Ionicons } from '@expo/vector-icons';
 import { bootstrapNotifications } from 'src/lib/notifications';
 import { ensureLocationPermission } from 'src/lib/location';
-import { runEventAssetUpdate } from 'src/services/eventUpdates';
+// import { runEventAssetUpdate } from 'src/services/eventUpdates';
 
 export default function RootLayout() {
   useEffect(() => {
     bootstrapNotifications();
     ensureLocationPermission();
+    // enable this line to check the logic to re-hydrate zustand with assets/data/event_updates.json
     // runEventAssetUpdate();
   }, []);
 
