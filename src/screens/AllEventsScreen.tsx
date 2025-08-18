@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
   btnWrapper: {
     position: 'absolute',
     top: '90%',
-    // right: '5%',
     flexDirection: 'row',
   },
   roundButton: {

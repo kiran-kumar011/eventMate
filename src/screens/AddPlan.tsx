@@ -24,7 +24,7 @@ const iso = (d: Date): string | null => d.toISOString();
 
 export default function AddEvent() {
   const router = useRouter();
-  const { coords, loading } = useCurrentLocation();
+  const { coords } = useCurrentLocation();
 
   const events = useEvents((s) => s.events);
   const { addDraft, updateEvent } = useEvents((s) => ({

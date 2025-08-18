@@ -16,9 +16,6 @@
       "@store/*": [
         "src/store/*"
       ],
-      "@types/*": [
-        "src/types/*"
-      ],
       "@lib": [
         "src/lib/*"
       ]

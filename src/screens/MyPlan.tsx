@@ -20,7 +20,7 @@ export default function MyPlan() {
   }
 
   return (
-    <View style={{ flex: 1, padding: 12, backgroundColor: '#f9fafb' }}>
+    <View style={styles.listContainer}>
       <FlatList
         data={planned}
         keyExtractor={(i) => i.id}
@@ -31,6 +31,7 @@ export default function MyPlan() {
 }
 
 const styles = StyleSheet.create({
+  listContainer: { flex: 1, padding: 12, backgroundColor: '#f9fafb' },
   falbackUI: {
     flex: 1,
     alignItems: 'center',
