@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { View, Text, Image, Pressable, StyleSheet, Alert } from 'react-native';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +11,7 @@ import {
 } from 'src/lib/notifications';
 import { isPast, thirtyMinsBefore } from 'src/utils/dateUtils';
 
-export default function EventCard({ event }: { event: Event }) {
+function EventCard({ event }: { event: Event }) {
   const planIds = useEvents((s) => s.planIds);
   const togglePlan = useEvents((s) => s.togglePlan);
   const isSaved = planIds.includes(event.id);
@@ -111,3 +112,5 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
 });
+
+export default memo(EventCard);

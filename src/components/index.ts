@@ -3,3 +3,4 @@ export { default as EventList } from '@components/EventList';
 export { default as EventMap } from '@components/EventMap';
 export { default as TimePickerField } from '@components/TimePicker';
 export { default as Field } from '@components/Field';
+export { default as FullScreenLoader } from '@components/FullScreenLoader';

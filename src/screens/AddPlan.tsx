@@ -22,14 +22,11 @@ const iso = (d: Date): string | null => d.toISOString();
 export default function AddEvent() {
   const router = useRouter();
 
-  const { addDraft, updateEvent, events, lastKnownLocation } = useEvents(
-    (s) => ({
-      addDraft: s.addDraft,
-      updateEvent: s.updateEvent,
-      lastKnownLocation: s.lastKnownLocation,
-      events: s.events,
-    }),
-  );
+  const { addDraft, updateEvent, events } = useEvents((s) => ({
+    addDraft: s.addDraft,
+    updateEvent: s.updateEvent,
+    events: s.events,
+  }));
 
   const { id: paramId, eventId: paramEventId } = useLocalSearchParams<{
     id?: string;
@@ -46,8 +43,8 @@ export default function AddEvent() {
   // Form state
   const [title, setTitle] = useState('');
   const [venueName, setVenue] = useState('');
-  const [startAt, setStart] = useState(iso(new Date()));
-  const [endAt, setEnd] = useState(iso(addMinutes(new Date(), 30)));
+  const [startAt, setStart] = useState(iso(addMinutes(new Date(), 30)));
+  const [endAt, setEnd] = useState(iso(addMinutes(new Date(), 60)));
   const [latLng, setCoords] = useState<LatLng>({
     latitude: null,
     longitude: null,
