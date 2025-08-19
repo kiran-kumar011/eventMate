@@ -1,6 +1,4 @@
 import {
-  View,
-  TextInput,
   Text,
   Pressable,
   Alert,
@@ -15,22 +13,23 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useEvents } from '@store/useEvents';
-import type { Event } from 'src/types/Event';
-import { TimePickerField, EventMap } from '@components/index';
-
-import { useCurrentLocation } from 'src/hooks/useCurrentLocation';
+import { LatLng, type Event } from 'src/types/Event';
+import { TimePickerField, EventMap, Field } from '@components/index';
+import { addMinutes } from 'src/utils/dateUtils';
 
 const iso = (d: Date): string | null => d.toISOString();
 
 export default function AddEvent() {
   const router = useRouter();
-  const { coords } = useCurrentLocation();
 
-  const events = useEvents((s) => s.events);
-  const { addDraft, updateEvent } = useEvents((s) => ({
-    addDraft: s.addDraft,
-    updateEvent: s.updateEvent,
-  }));
+  const { addDraft, updateEvent, events, lastKnownLocation } = useEvents(
+    (s) => ({
+      addDraft: s.addDraft,
+      updateEvent: s.updateEvent,
+      lastKnownLocation: s.lastKnownLocation,
+      events: s.events,
+    }),
+  );
 
   const { id: paramId, eventId: paramEventId } = useLocalSearchParams<{
     id?: string;
@@ -48,9 +47,11 @@ export default function AddEvent() {
   const [title, setTitle] = useState('');
   const [venueName, setVenue] = useState('');
   const [startAt, setStart] = useState(iso(new Date()));
-  const [endAt, setEnd] = useState(iso(new Date()));
-  const [latitude, setLat] = useState(coords?.latitude);
-  const [longitude, setLon] = useState(coords?.longitude);
+  const [endAt, setEnd] = useState(iso(addMinutes(new Date(), 30)));
+  const [latLng, setCoords] = useState<LatLng>({
+    latitude: null,
+    longitude: null,
+  });
   const [description, setDesc] = useState('');
 
   const [localImageUri, setLocalImageUri] = useState<string>('');
@@ -65,8 +66,10 @@ export default function AddEvent() {
     setStart(seedEvent.startAt ?? iso(new Date()));
     setEnd(seedEvent.endAt ?? new Date(Date.now() + 60 * 60 * 1000));
     setDesc(seedEvent.description ?? '');
-    setLat(seedEvent.latitude ?? coords?.latitude);
-    setLon(seedEvent.longitude ?? coords?.longitude);
+    setCoords({
+      longitude: seedEvent.longitude ?? null,
+      latitude: seedEvent.latitude ?? null,
+    });
     if (seedEvent.imageUrl) setLocalImageUri(seedEvent.imageUrl);
     hydrated.current = true;
   }, [seedEvent]);
@@ -126,20 +129,21 @@ export default function AddEvent() {
     if (Date.parse(startAt) >= Date.parse(endAt))
       return Alert.alert('Validation', 'Start must be before end');
 
-    const lat = latitude ?? coords?.latitude;
-    const lon = longitude ?? coords?.longitude;
+    const lat = latLng.latitude;
+    const lon = latLng.longitude;
     if (Number.isNaN(lat) || Number.isNaN(lon))
       return Alert.alert('Validation', 'Latitude/Longitude must be numbers');
 
     // Build optimistic draft (keep existing image if no new one chosen)
+    const current = new Date().toISOString();
     const e: Event = {
       id: isEdit ? seedEvent.id : `draft-${Date.now()}`,
       title: title.trim(),
       startAt,
       endAt,
       venueName: venueName.trim(),
-      latitude: lat,
-      longitude: lon,
+      latitude: lat!,
+      longitude: lon!,
       description:
         description.trim() || (isEdit ? 'Edited draft' : 'Draft event'),
       imageUrl:
@@ -148,32 +152,21 @@ export default function AddEvent() {
         `https://picsum.photos/seed/${Math.random()
           .toString(36)
           .slice(2)}/800/500`,
-      updatedAt: new Date().toLocaleString(),
+      updatedAt: current,
+      createdAt: isEdit ? seedEvent.createdAt : current,
     };
 
     isEdit ? updateEvent(e) : addDraft(e);
     router.back();
   };
 
-  const field = (
-    label: string,
-    value: string,
-    setter: (v: string) => void,
-    props: any = {},
-  ) => (
-    <View style={styles.inputWrapper}>
-      <Text style={styles.inputLabel}>{label}</Text>
-      <TextInput
-        value={value}
-        onChangeText={setter}
-        style={styles.input}
-        {...props}
-      />
-    </View>
-  );
+  const setNewCoords = (latLng: LatLng) => {
+    if (!seedEvent) {
+      setCoords(latLng);
+    }
+  };
 
   const previewUri = localImageUri || seedEvent?.imageUrl || '';
-
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
@@ -186,16 +179,24 @@ export default function AddEvent() {
         <Text style={styles.header}>
           {isEdit ? 'Edit Event' : 'Add Event (Draft)'}
         </Text>
-
-        {field('Title', title, setTitle, { placeholder: 'Event title' })}
-        {field('Venue', venueName, setVenue, { placeholder: 'Hall A' })}
+        <Field
+          label={'Title'}
+          value={title}
+          setter={setTitle}
+          rest={{ placeholder: 'Event title' }}
+        />
+        <Field
+          label={'Venue'}
+          value={venueName}
+          setter={setVenue}
+          rest={{ placeholder: 'Hall A' }}
+        />
         <TimePickerField
           label="Start time"
           value={new Date(startAt ?? new Date())}
           onChange={(date) => setStart(iso(date))}
           is24Hour={false}
           display={Platform.select({ ios: 'spinner', android: 'clock' })}
-          minuteInterval={5} // iOS only
         />
         <TimePickerField
           label="End time"
@@ -203,11 +204,14 @@ export default function AddEvent() {
           onChange={(date) => setEnd(iso(date))}
           is24Hour={false} // set false for 12-hour; omit to follow device setting
           display={Platform.select({ ios: 'spinner', android: 'clock' })}
-          minuteInterval={5} // iOS only
         />
-
-        <EventMap />
-
+        <EventMap
+          disableGestures={false}
+          height={160}
+          latitude={latLng?.latitude}
+          longitude={latLng?.longitude}
+          setCoords={setNewCoords}
+        />
         {!!previewUri && (
           <Image
             source={{ uri: previewUri }}
@@ -215,10 +219,12 @@ export default function AddEvent() {
             resizeMode="cover"
           />
         )}
-
-        {field('Description', description, setDesc, {
-          placeholder: 'What is this about?',
-        })}
+        <Field
+          label="Description"
+          value={description}
+          setter={setDesc}
+          rest={{ placeholder: 'What is this about?' }}
+        />
         <Pressable onPress={pickImage} style={styles.secondaryBtn}>
           <Text style={styles.secondaryBtnTxt}>
             {localImageUri ? 'Change Image' : 'Pick Image'}
@@ -244,15 +250,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     color: '#111827',
   },
-  inputWrapper: { marginBottom: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: 'white',
-  },
-  inputLabel: { marginBottom: 6, color: '#111827', fontWeight: '600' },
   btn: {
     backgroundColor: '#111827',
     padding: 12,

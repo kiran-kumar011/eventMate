@@ -80,9 +80,12 @@ export default function EventDetail() {
           {event?.description}
         </Text>
         <EventMap
-          latitude={event.latitude}
-          longitude={event.longitude}
+          latitude={event?.latitude ?? null}
+          longitude={event?.longitude ?? null}
           borderRadius={20}
+          disableGestures={true}
+          setCoords={() => {}}
+          height={160}
         />
         <Pressable
           onPress={handleScheduling}

@@ -1,30 +1,33 @@
-import React, { memo, useMemo } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
-import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps';
-import { isValidCoord } from 'src/lib/location';
+import React, { memo, useMemo, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
+import MapView, {
+  Marker,
+  Region,
+  PROVIDER_GOOGLE,
+  MapPressEvent,
+} from 'react-native-maps';
+import { isValidCoord, Location } from 'src/lib/location';
+import { EventMapProps } from 'src/types/Event';
 
-type Props = {
-  latitude?: number | null;
-  longitude?: number | null;
-  title?: string; // optional marker title
-  description?: string; // optional marker description
-  height?: number; // map height (px)
-  zoomDelta?: number; // smaller = more zoomed in
-  borderRadius?: number;
-  disableGestures?: boolean;
-};
+import { useEvents } from '@store/useEvents';
 
-const EventMap: React.FC<Props> = ({
-  latitude = 40.7128,
-  longitude = 74.006,
+const EventMap: React.FC<EventMapProps> = ({
+  latitude,
+  longitude,
   title = 'Event location',
-  description,
-  height = 160,
+  description = 'Pin Location',
+  height,
   zoomDelta = 0.005,
   borderRadius = 12,
   disableGestures = true,
+  setCoords = () => {},
 }) => {
+  const { setLastKnownLocation } = useEvents((s) => ({
+    setLastKnownLocation: s.setLastKnownLocation,
+  }));
   const valid = isValidCoord(latitude, longitude);
+
+  const mapRef = useRef<MapView>(null);
 
   const region: Region | undefined = useMemo(() => {
     if (!valid) return undefined;
@@ -35,6 +38,47 @@ const EventMap: React.FC<Props> = ({
       longitudeDelta: zoomDelta,
     };
   }, [valid, latitude, longitude, zoomDelta]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission needed',
+          'Location permission is required to pick a place.',
+        );
+        return;
+      }
+      const pos = await Location.getCurrentPositionAsync({});
+
+      setLastKnownLocation(pos.coords.latitude, pos.coords.longitude);
+      setCoords({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      });
+      mapRef.current?.animateToRegion(
+        {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        },
+        500,
+      );
+      requestAnimationFrame(() => {
+        mapRef.current?.animateCamera(
+          {
+            center: {
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+            },
+            zoom: 16,
+          },
+          { duration: 700 },
+        );
+      });
+    })();
+  }, []);
 
   if (!valid) {
     return (
@@ -48,12 +92,18 @@ const EventMap: React.FC<Props> = ({
     );
   }
 
+  const moveToCordinates = (e: MapPressEvent) => {
+    const { latitude, longitude } = e?.nativeEvent?.coordinate;
+    setCoords({ latitude, longitude });
+  };
+
   return (
     <MapView
+      ref={mapRef}
       style={{
         height,
         borderRadius,
-        overflow: 'hidden' as const,
+        overflow: 'hidden',
       }}
       initialRegion={region}
       scrollEnabled={!disableGestures}
@@ -63,15 +113,14 @@ const EventMap: React.FC<Props> = ({
       pointerEvents="auto"
       accessibilityLabel="Event location map"
       provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+      toolbarEnabled
+      showsMyLocationButton
+      showsUserLocation
+      onPress={moveToCordinates}
     >
-      <Marker
-        coordinate={{
-          latitude: region!.latitude,
-          longitude: region!.longitude,
-        }}
-        title={title}
-        description={description}
-      />
+      {region && (
+        <Marker coordinate={region} title={title} description={description} />
+      )}
     </MapView>
   );
 };

@@ -70,3 +70,6 @@ export function isPast(
   const t = when.getTime();
   return inclusive ? t <= now : t < now;
 }
+
+export const addMinutes = (date: Date, minutes: number) =>
+  new Date(date.getTime() + minutes * 60_000);

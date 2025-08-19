@@ -1,6 +1,8 @@
 import { Alert } from 'react-native';
 import * as Location from 'expo-location';
 
+export { Location };
+
 export type LatLng = { latitude: number; longitude: number };
 
 export async function ensureLocationPermission() {
@@ -9,7 +11,7 @@ export async function ensureLocationPermission() {
     throw new Error('Location permission (foreground) denied');
   let bgGranted = true;
   if (Location?.hasServicesEnabledAsync) {
-    const hasServicesEnabledAsync = await Location.hasServicesEnabledAsync();
+    await Location.hasServicesEnabledAsync();
   }
 
   return bgGranted;

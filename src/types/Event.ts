@@ -11,5 +11,31 @@ export type Event = {
   updatedAt: string;
   status?: 'active' | 'canceled' | 'archived';
   recentlyUpdated?: boolean;
-  // createdAt: string; could be easy to implement the timestamps for referencing
+  createdAt: string;
 };
+
+export type Pin = {
+  id: string;
+  lat: number;
+  lon: number;
+  title?: string;
+  address?: string;
+  createdAt: string;
+  eventId?: string;
+};
+
+export type Params = { id?: string };
+
+export type EventMapProps = {
+  latitude?: number | null;
+  longitude?: number | null;
+  title?: string;
+  description?: string;
+  height?: number;
+  zoomDelta?: number;
+  borderRadius?: number;
+  disableGestures?: boolean;
+  setCoords?: (coords: LatLng) => void;
+};
+
+export type LatLng = { latitude: number | null; longitude: number | null };

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { events } from '@assets/data/events.json';
-import type { Event as BaseEvent } from 'src/types/Event';
+import type { Event as BaseEvent, Pin } from 'src/types/Event';
 
 import basePkg from '@assets/data/events.json';
 
@@ -20,6 +20,7 @@ type State = {
   };
   __originals?: Record<string, Event | undefined>;
   __updatedEvents?: Event[] | [];
+  pins?: Pin[];
 };
 
 type Actions = {
@@ -28,8 +29,6 @@ type Actions = {
   togglePlan: (id: string) => void;
   addDraft: (e: Event) => void;
   setLastKnownLocation: (lat: number, lon: number) => void;
-  deletePlan: (id: string) => void;
-
   hydrateFromAssets: () => void;
   applyUpdatesFromAssetsByUpdatedAt: () => number;
   clearUpdatedFlags: () => void;
@@ -67,11 +66,6 @@ export const useEvents = create<State & Actions>()(
       setLastKnownLocation: (latitude, longitude) =>
         set({ lastKnownLocation: { latitude, longitude } }),
 
-      deletePlan: (id) =>
-        set((s) => ({
-          events: s.events.filter((e) => e.id !== id),
-          planIds: s.planIds.filter((x) => x !== id),
-        })),
       // NEW: If app/OTA ships a higher base version, replace local cache with the new base
       hydrateFromAssets: () => {
         const { meta } = get();
