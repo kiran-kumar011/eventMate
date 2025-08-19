@@ -36,6 +36,7 @@ export default function EventList() {
         contentContainerStyle={styles.contentContainerStyle}
         ListEmptyComponent={ListEmptyComponent}
         estimatedItemSize={72}
+        removeClippedSubviews
       />
     </View>
   );
