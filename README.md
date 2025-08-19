@@ -1,4 +1,6 @@
-# EventMate — Create/Edit Events, attach image, location and reminders
+# EventMate — Create & Edit Events · Images · Location · Reminders
+
+When running the app locally, please verify the behaviour on an Android device or emulator to ensure everything works as expected.
 
 A React Native app built with **Expo SDK 51**, **React Native 0.74**, and **expo-router**.
 
